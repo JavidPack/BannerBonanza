@@ -39,12 +39,12 @@ namespace BannerBonanza.Tiles
 
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Banner Rack");
-			AddMapEntry(new Color(13, 88, 130), name, mapEntryFunction);
+			AddMapEntry(new Color(13, 88, 130), name, MapEntryFunction);
 
 			animationFrameHeight = 72;
 		}
 
-		private string mapEntryFunction(string arg1, int i, int j)
+		private string MapEntryFunction(string arg1, int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
 			int left = i - (tile.frameX % 54 / 18);

@@ -131,7 +131,7 @@ namespace BannerBonanza.Tiles
 
 			StringBuilder sb = new StringBuilder();
 			sb.Append($"Total: {bannerItems.Count}/{itemToBanner.Count}");
-			sb.Append($"\nVanilla: {bannerItems.Count}/249");
+			sb.Append($"\nVanilla: {bannerItems.Count(x=>x.type < ItemID.Count)}/249");
 
 			Dictionary<Mod, int> BannersPerMod = new Dictionary<Mod, int>();
 			for (int i = NPCID.Count; i < NPCLoader.NPCCount; i++)
