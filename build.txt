@@ -1,7 +1,6 @@
 author = jopojelly, @VoxelFox
-version = 1.1
+version = 1.2
 displayName = Banner Bonanza
-languageVersion = 6
 buildIgnore = .vs\*, *.csproj, *.user, obj\*, bin\*, *.config, lib\*, .gitignore, .git\*, ignore\*,
 includePDB = true
 homepage = https://forums.terraria.org/index.php?threads/banner-bonanza-collect-and-consolidate-banners.60797/

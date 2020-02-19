@@ -1,5 +1,6 @@
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace BannerBonanza.Items
 {
@@ -13,7 +14,7 @@ namespace BannerBonanza.Items
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.AnglerFishBanner);
-			item.createTile = mod.TileType<Tiles.BannerRackTile>();
+			item.createTile = TileType<Tiles.BannerRackTile>();
 			item.placeStyle = 0;
 			item.width = 48;
 			item.height = 68;

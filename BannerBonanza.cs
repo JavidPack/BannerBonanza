@@ -10,6 +10,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace BannerBonanza
 {
@@ -20,10 +21,31 @@ namespace BannerBonanza
 		{
 			instance = this;
 
+			if (ModLoader.GetMod("TerrariaOverhaul") != null) {
+				Logger.Warn("Terraria Overhaul detected, banner rack will not work because of Terraria Overhaul code changes.");
+			}
+
 			//if (ModLoader.version == new Version(0, 10, 0, 2))
 			//{
 			//	throw new Exception("\nThis mod mysteriously doesn't work with 0.10.0.2\n\n") { HelpLink = "www.google.com"};
 			//}
+		}
+
+		public override void PostSetupContent() {
+			Mod mod = ModLoader.GetMod("RecipeBrowser");
+			if (mod != null && !Main.dedServ) {
+				mod.Call(new object[5]
+				{
+					"AddItemCategory",
+					"Banners",
+					"Tiles",
+					GetTexture("RecipeBrowserBannerCategoryIcon"), // 24x24 icon
+					(Predicate<Item>)((Item item) =>
+					{
+						return Tiles.BannerRackTE.itemToBanner.ContainsKey(item.type);
+					})
+				});
+			}
 		}
 
 		public override void AddRecipeGroups()
@@ -36,7 +58,7 @@ namespace BannerBonanza
 			{
 				if (Tiles.BannerRackTE.itemToBanner.ContainsKey(item.Value))
 				{
-					ErrorLogger.Log($"BannerBonanza: Warning, multiple BannerIDs pointing to same ItemID: Banners:{Lang.GetNPCNameValue(item.Key)},{Lang.GetNPCNameValue(BannerRackTE.itemToBanner[item.Value])} Item:{Lang.GetItemNameValue(item.Value)}");
+					Logger.Warn($"BannerBonanza: Warning, multiple BannerIDs pointing to same ItemID: Banners:{Lang.GetNPCNameValue(item.Key)},{Lang.GetNPCNameValue(BannerRackTE.itemToBanner[item.Value])} Item:{Lang.GetItemNameValue(item.Value)}");
 				}
 				else
 				{
@@ -108,7 +130,7 @@ namespace BannerBonanza
 				//	superBannerTE.stringUpToDate = false; 
 				//	break;
 				default:
-					ErrorLogger.Log("BannerBonanza: Unknown Message type: " + msgType);
+					Logger.Warn("BannerBonanza: Unknown Message type: " + msgType);
 					break;
 			}
 		}
@@ -262,7 +284,7 @@ namespace BannerBonanza
 				shop.item[nextSlot].SetNameOverride("(I don't want to die)");
 				nextSlot++;
 
-				//shop.item[nextSlot].SetDefaults(mod.ItemType<Items.CarKey>());
+				//shop.item[nextSlot].SetDefaults(ItemType<Items.CarKey>());
 				//shop.item[nextSlot].shopCustomPrice = new int?(2);
 				//shop.item[nextSlot].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
 				//nextSlot++;

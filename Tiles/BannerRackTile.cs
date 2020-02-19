@@ -5,6 +5,7 @@ using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 using Terraria.ObjectData;
 using System.Linq;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace BannerBonanza.Tiles
 			TileObjectData.newTile.StyleHorizontal = true;
 			TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom, TileObjectData.newTile.Width, 0);
 
-			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(mod.GetTileEntity<BannerRackTE>().Hook_AfterPlacement, -1, 0, true);
+			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(GetInstance<BannerRackTE>().Hook_AfterPlacement, -1, 0, true);
 			TileObjectData.addTile(Type);
 
 			ModTranslation name = CreateMapEntryName();
@@ -49,7 +50,7 @@ namespace BannerBonanza.Tiles
 			Tile tile = Main.tile[i, j];
 			int left = i - (tile.frameX % 54 / 18);
 			int top = j - (tile.frameY / 18);
-			int index = mod.GetTileEntity<BannerRackTE>().Find(left, top);
+			int index = GetInstance<BannerRackTE>().Find(left, top);
 			if (index == -1)
 			{
 				return arg1 + "\n" + "Error";
@@ -92,7 +93,7 @@ namespace BannerBonanza.Tiles
 			Tile t = Main.tile[i, j];
 			//int style = t.frameX / 54;
 
-			int index = mod.GetTileEntity<BannerRackTE>().Find(i, j);
+			int index = GetInstance<BannerRackTE>().Find(i, j);
 			if (index == -1)
 			{
 				return;
@@ -169,7 +170,7 @@ namespace BannerBonanza.Tiles
 					int left = i - (tile.frameX % 54 / 18);
 					int top = j - (tile.frameY / 18);
 
-					int index = mod.GetTileEntity<BannerRackTE>().Find(left, top);
+					int index = GetInstance<BannerRackTE>().Find(left, top);
 					if (index == -1)
 					{
 						return;
@@ -187,7 +188,7 @@ namespace BannerBonanza.Tiles
 			int left = i - (tile.frameX % 54 / 18);
 			int top = j - (tile.frameY / 18);
 
-			int index = mod.GetTileEntity<BannerRackTE>().Find(left, top);
+			int index = GetInstance<BannerRackTE>().Find(left, top);
 			if (index == -1)
 			{
 				return;
@@ -241,9 +242,9 @@ namespace BannerBonanza.Tiles
 			//Tile t = Main.tile[i, j];
 			//if (t.active())
 			{
-				Item.NewItem(i * 16, j * 16, 54, 72, mod.ItemType<Items.BannerRackItem>());
+				Item.NewItem(i * 16, j * 16, 54, 72, ItemType<Items.BannerRackItem>());
 			}
-			mod.GetTileEntity<BannerRackTE>().Kill(i, j); // This should call OnKill
+			GetInstance<BannerRackTE>().Kill(i, j); // This should call OnKill
 		}
 
 		public override void MouseOver(int i, int j)
@@ -251,14 +252,14 @@ namespace BannerBonanza.Tiles
 			Player player = Main.LocalPlayer;
 			player.noThrow = 2;
 			player.showItemIcon = true;
-			//player.showItemIcon2 = mod.ItemType<Items.SuperBannerItem>();
+			//player.showItemIcon2 = ItemType<Items.SuperBannerItem>();
 			player.showItemIcon2 = -1;
 
 			Tile tile = Main.tile[i, j];
 			int left = i - (tile.frameX % 54 / 18);
 			int top = j - (tile.frameY / 18);
 
-			int index = mod.GetTileEntity<BannerRackTE>().Find(left, top);
+			int index = GetInstance<BannerRackTE>().Find(left, top);
 			if (index == -1)
 			{
 				return;
@@ -278,7 +279,7 @@ namespace BannerBonanza.Tiles
 			int left = i - (tile.frameX % 54 / 18);
 			int top = j - (tile.frameY / 18);
 
-			int index = mod.GetTileEntity<BannerRackTE>().Find(left, top);
+			int index = GetInstance<BannerRackTE>().Find(left, top);
 			if (index == -1)
 			{
 				return;
