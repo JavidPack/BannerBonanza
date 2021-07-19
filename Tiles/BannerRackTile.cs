@@ -119,12 +119,16 @@ namespace BannerBonanza.Tiles
 
 					int itemXOffset = 8 + (-bannerRackTE.counter / 2 + drawItemNumber * 16);
 
-					if (item != null && item.createTile > 0) // unloaded....spawn in world when you can.
+					if (item != null && item.createTile > TileID.Dirt) // unloaded....spawn in world when you can.
 					{
 						var tod = TileObjectData.GetTileData(item.createTile, item.placeStyle);
-						int x = (item.placeStyle % tod.StyleWrapLimit) * tod.CoordinateFullWidth;
-						int y = (item.placeStyle / tod.StyleWrapLimit) * tod.CoordinateFullHeight;
 
+						int x = item.placeStyle * tod.CoordinateFullWidth;
+						int y = 0;
+						if (tod.StyleWrapLimit > 0) {
+							x = (item.placeStyle % tod.StyleWrapLimit) * tod.CoordinateFullWidth;
+							y = (item.placeStyle / tod.StyleWrapLimit) * tod.CoordinateFullHeight;
+						}
 
 						Main.instance.LoadTiles(item.createTile);
 						Texture2D tileTexture = Main.tileTexture[item.createTile];
@@ -300,7 +304,7 @@ namespace BannerBonanza.Tiles
 					{
 						// Inform Server of current item (just to be safe?)
 						// TODO: I think NetMessage 5 doesn't sync mod data.
-						NetMessage.SendData(5, -1, -1, null, player.whoAmI, (float)itemIndex, (float)player.inventory[itemIndex].prefix, 0f, 0, 0, 0);
+						NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null, player.whoAmI, (float)itemIndex, (float)player.inventory[itemIndex].prefix, 0f, 0, 0, 0);
 						// Mimicing QuickStackAllChests: NetMessage.SendData(85, -1, -1, null, itemIndex, 0f, 0f, 0f, 0, 0, 0);
 						indexes.Add(itemIndex);
 						// Prevents some moving items in ui while waiting for server response.

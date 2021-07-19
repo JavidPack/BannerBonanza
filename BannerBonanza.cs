@@ -112,7 +112,7 @@ namespace BannerBonanza
 					PutItemsInSuperBannerTE(bannerRackTE, indexes, player);
 					foreach (var itemIndex in indexes)
 					{
-						NetMessage.SendData(5, -1, -1, null, whoAmI, (float)itemIndex, (float)player.inventory[itemIndex].prefix, 0f, 0, 0, 0);
+						NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null, whoAmI, (float)itemIndex, (float)player.inventory[itemIndex].prefix, 0f, 0, 0, 0);
 					}
 
 					//Inform all
@@ -137,7 +137,7 @@ namespace BannerBonanza
 
 		private void PutItemsInSuperBannerTE(BannerRackTE superBannerTE, List<int> indexes, Player player)
 		{
-			if (Main.netMode == 1)
+			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
 				// uh oh
 				return;
