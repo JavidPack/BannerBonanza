@@ -13,24 +13,25 @@ namespace BannerBonanza.Items
 
 		public override void SetDefaults()
 		{
-			item.CloneDefaults(ItemID.AnglerFishBanner);
-			item.createTile = TileType<Tiles.BannerRackTile>();
-			item.placeStyle = 0;
-			item.width = 48;
-			item.height = 68;
+			Item.CloneDefaults(ItemID.AnglerFishBanner);
+            Item.createTile = TileType<Tiles.BannerRackTile>();
+            Item.placeStyle = 0;
+            Item.width = 48;
+            Item.height = 68;
 		}
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.StylistKilLaKillScissorsIWish);
-			recipe.AddIngredient(ItemID.Rope, 10);
-			recipe.AddIngredient(ItemID.Glass, 10);
-			recipe.AddIngredient(ItemID.Topaz, 2);
-			recipe.AddRecipeGroup("Wood", 10);
-			recipe.AddTile(TileID.HeavyWorkBench);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
-		}
+			CreateRecipe()
+                .AddIngredient(ItemID.StylistKilLaKillScissorsIWish)
+
+                .AddIngredient(ItemID.Rope)
+                .AddIngredient(ItemID.Glass, 10)
+                .AddIngredient(ItemID.Topaz, 2)
+                .AddRecipeGroup("Wood", 10)
+
+                .AddTile(TileID.HeavyWorkBench)
+				.Register();
+        }
 	}
 }

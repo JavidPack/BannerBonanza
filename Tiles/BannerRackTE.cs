@@ -34,22 +34,19 @@ namespace BannerBonanza.Tiles
 			unloadedBannerItems = new List<Item>();
 		}
 
-		public override TagCompound Save()
+		public override void SaveData(TagCompound tag)
 		{
-			return new TagCompound
-			{
-				["BannerItems"] = bannerItems.Union(unloadedBannerItems).Select(ItemIO.Save).ToList()
-			};
+			tag.Add("BannerItems", bannerItems.Union(unloadedBannerItems).Select(ItemIO.Save).ToList());
 		}
 
-		public override void Load(TagCompound tag)
-		{
+        public override void LoadData(TagCompound tag)
+        {
 			bannerItems.AddRange(tag.GetList<TagCompound>("BannerItems").Select(ItemIO.Load));
-			unloadedBannerItems.AddRange(bannerItems.Where(x => x.type == ItemID.Count));
-			bannerItems.RemoveAll(x => x.type == ItemID.Count);
+            unloadedBannerItems.AddRange(bannerItems.Where(x => x.type == ItemID.Count));
+            bannerItems.RemoveAll(x => x.type == ItemID.Count);
 		}
 
-		public override void NetSend(BinaryWriter writer, bool lightSend)
+        public override void NetSend(BinaryWriter writer)
 		{
 			writer.Write(bannerItems.Count);
 			foreach (var item in bannerItems)
@@ -58,7 +55,7 @@ namespace BannerBonanza.Tiles
 			}
 		}
 
-		public override void NetReceive(BinaryReader reader, bool lightReceive)
+		public override void NetReceive(BinaryReader reader)
 		{
 			bannerItems.Clear();
 			stringUpToDate = false;
@@ -143,14 +140,14 @@ namespace BannerBonanza.Tiles
 				{
 					ModItem item = ItemLoader.GetItem(itemnum);
 					int currentCount;
-					BannersPerMod.TryGetValue(item.mod, out currentCount);
-					BannersPerMod[item.mod] = currentCount + 1;
+					BannersPerMod.TryGetValue(item.Mod, out currentCount);
+					BannersPerMod[item.Mod] = currentCount + 1;
 				}
 			}
 
 			foreach (var item in BannersPerMod)
 			{
-				int num = bannerItems.Count(x => x.modItem != null && x.modItem.mod == item.Key);
+				int num = bannerItems.Count(x => x.ModItem != null && x.ModItem.Mod == item.Key);
 				sb.Append($"\n{item.Key.DisplayName}: {num}/{item.Value}");
 			}
 			if (unloadedBannerItems.Count > 0)
@@ -178,13 +175,13 @@ namespace BannerBonanza.Tiles
 			return hoverString;
 		}
 
-		public override bool ValidTile(int i, int j)
+        public override bool IsTileValidForEntity(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
-			return tile.active() && tile.type == TileType<BannerRackTile>() && tile.frameX % 54 == 0 && tile.frameY == 0;
+			return tile.IsActive && tile.type == TileType<BannerRackTile>() && tile.frameX % 54 == 0 && tile.frameY == 0;
 		}
 
-		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
+        public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
@@ -238,9 +235,10 @@ namespace BannerBonanza.Tiles
 				if (type != ItemID.Count && ItemID.Sets.BannerStrength[type].Enabled)
 				{
 					int bannerID = itemToBanner[type];
-					player.NPCBannerBuff[bannerID] = true;
-					player.hasBanner = true;
-				}
+
+                    Main.SceneMetrics.NPCBannerBuff[bannerID] = true;
+                    Main.SceneMetrics.hasBanner = true;
+                }
 			}
 		}
 	}
