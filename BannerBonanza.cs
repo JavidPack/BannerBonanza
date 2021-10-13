@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -21,7 +22,7 @@ namespace BannerBonanza
 		{
 			instance = this;
 
-			if (ModLoader.GetMod("TerrariaOverhaul") != null) {
+			if (ModLoader.TryGetMod("TerrariaOverhaul", out _)) {
 				Logger.Warn("Terraria Overhaul detected, banner rack will not work because of Terraria Overhaul code changes.");
 			}
 
@@ -32,21 +33,21 @@ namespace BannerBonanza
 		}
 
 		public override void PostSetupContent() {
-			Mod mod = ModLoader.GetMod("RecipeBrowser");
-			if (mod != null && !Main.dedServ) {
-				mod.Call(new object[5]
+			if (!ModLoader.TryGetMod("RecipeBrowser", out var mod) || Main.dedServ)
+                return; 
+			
+			mod.Call(new object[5]
+			{
+				"AddItemCategory",
+				"Banners",
+				"Tiles",
+				Assets.Request<Texture2D>("RecipeBrowserBannerCategoryIcon").Value, // 24x24 icon
+				(Predicate<Item>)((Item item) =>
 				{
-					"AddItemCategory",
-					"Banners",
-					"Tiles",
-					GetTexture("RecipeBrowserBannerCategoryIcon"), // 24x24 icon
-					(Predicate<Item>)((Item item) =>
-					{
-						return Tiles.BannerRackTE.itemToBanner.ContainsKey(item.type);
-					})
-				});
-			}
-		}
+					return Tiles.BannerRackTE.itemToBanner.ContainsKey(item.type);
+				})
+			});
+        }
 
 		public override void AddRecipeGroups()
 		{
@@ -69,7 +70,7 @@ namespace BannerBonanza
 			for (int i = -10; i < NPCID.Count; i++)
 			{
 				int vanillaBannerID = Terraria.Item.NPCtoBanner(i);
-				if (vanillaBannerID > 0 && !NPCID.Sets.ExcludedFromDeathTally[NPCID.FromNetId(i)])
+				if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(i)])
 				{
 					int vanillaBannerItemID = Item.BannerToItem(vanillaBannerID);
 					if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled)
@@ -152,7 +153,7 @@ namespace BannerBonanza
 					{
 						added = true;
 						string message = $"Banner for {item.Name} added to Banner Rack";
-						NetMessage.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White);
+						Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White);
 						//Main.NewText($"Banner for {item.Name} added to Banner Rack");
 						Item clone = item.Clone();
 						clone.stack = 1;
@@ -173,7 +174,7 @@ namespace BannerBonanza
 			{
 				string message = $"No new Banners to add to Banner Rack";
 				//Main.NewText($"No new Banners to add to Banner Rack");
-				NetMessage.SendChatMessageToClient(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
+				Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
 				// find closest npc that I don't have banner for.
 				//player.NPCBannerBuff
 				int nextNPCToKill = -1;
@@ -181,7 +182,7 @@ namespace BannerBonanza
 				for (int npctype = -10; npctype < NPCLoader.NPCCount; npctype++)
 				{
 					int vanillaBannerID = Terraria.Item.NPCtoBanner(npctype);
-					if (vanillaBannerID > 0 && !NPCID.Sets.ExcludedFromDeathTally[NPCID.FromNetId(npctype)])
+					if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(npctype)])
 					{
 						int vanillaBannerItemID = Item.BannerToItem(vanillaBannerID);
 						if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled)
@@ -200,7 +201,7 @@ namespace BannerBonanza
 				if (nextNPCToKill != -1)
 				{
 					message = $"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}";
-					NetMessage.SendChatMessageToClient(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
+					Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
 					//Main.NewText($"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}");
 				}
 			}

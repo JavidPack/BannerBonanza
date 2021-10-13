@@ -10,12 +10,13 @@ using Terraria.ObjectData;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using Terraria.GameContent;
 
 namespace BannerBonanza.Tiles
 {
 	public class BannerRackTile : ModTile
 	{
-		public override void SetDefaults()
+        public override void SetStaticDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
 			Main.tileNoAttach[Type] = true;
@@ -42,7 +43,7 @@ namespace BannerBonanza.Tiles
 			name.SetDefault("Banner Rack");
 			AddMapEntry(new Color(13, 88, 130), name, MapEntryFunction);
 
-			animationFrameHeight = 72;
+			AnimationFrameHeight = 72;
 		}
 
 		private string MapEntryFunction(string arg1, int i, int j)
@@ -71,18 +72,18 @@ namespace BannerBonanza.Tiles
 			}
 		}
 
-		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
-		{
+        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+        {
 			Tile t = Main.tile[i, j];
-			if (t.frameX == 0 && t.frameY == 0) // t.frameX % 54 == 0
-			{
-				Main.specX[nextSpecialDrawIndex] = i;
-				Main.specY[nextSpecialDrawIndex] = j;
-				nextSpecialDrawIndex++;
-			}
+			
+
+            if (t.frameX == 0 && t.frameY == 0) // t.frameX % 54 == 0
+            {
+				Main.instance.TilesRenderer.AddSpecialLegacyPoint(i, j);
+            }
 		}
 
-		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
+        public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			Vector2 zero = new Vector2((float)Main.offScreenRange, (float)Main.offScreenRange);
 			if (Main.drawToScreen)
@@ -131,7 +132,9 @@ namespace BannerBonanza.Tiles
 						}
 
 						Main.instance.LoadTiles(item.createTile);
-						Texture2D tileTexture = Main.tileTexture[item.createTile];
+                        var tileTexture = TextureAssets.Tile[item.createTile];
+						//Texture2D tileTexture = Main.tileTexture[item.createTile];
+
 						int[] heights = tod.CoordinateHeights;
 						int heightOffSet = 0;
 						int heightOffSetTexture = 0;
@@ -150,7 +153,7 @@ namespace BannerBonanza.Tiles
 							{
 								sourceRectangle.Width -= rightItemTrim;
 							}
-							Main.spriteBatch.Draw(tileTexture,
+							Main.spriteBatch.Draw(tileTexture.Value,
 								new Vector2(
 									leftItemNudge + itemXOffset + (i * 16) - (int)Main.screenPosition.X + 0,
 									j * 16 - (int)Main.screenPosition.Y + 8 + heightOffSet) + zero,
@@ -255,9 +258,9 @@ namespace BannerBonanza.Tiles
 		{
 			Player player = Main.LocalPlayer;
 			player.noThrow = 2;
-			player.showItemIcon = true;
+			player.cursorItemIconEnabled = true;
 			//player.showItemIcon2 = ItemType<Items.SuperBannerItem>();
-			player.showItemIcon2 = -1;
+			player.cursorItemIconID = -1;
 
 			Tile tile = Main.tile[i, j];
 			int left = i - (tile.frameX % 54 / 18);
@@ -269,14 +272,14 @@ namespace BannerBonanza.Tiles
 				return;
 			}
 			BannerRackTE bannerRackTE = (BannerRackTE)TileEntity.ByID[index];
-			player.showItemIconText = bannerRackTE.GetHoverString();
+			player.cursorItemIconText = bannerRackTE.GetHoverString();
 			// GUI Window:
 			// % Total, vanilla, modded 1/249
 			// % per event too.
 			// Event is based on which event is happening?
 		}
-
-		public override void RightClick(int i, int j)
+		
+		public override bool RightClick(int i, int j)
 		{
 			Player player = Main.LocalPlayer;
 			Tile tile = Main.tile[i, j];
@@ -286,14 +289,15 @@ namespace BannerBonanza.Tiles
 			int index = GetInstance<BannerRackTE>().Find(left, top);
 			if (index == -1)
 			{
-				return;
+				return true;
 			}
+
 			BannerRackTE bannerRackTE = (BannerRackTE)TileEntity.ByID[index];
 
 			// if Client, not SP, ask server to move items for you.
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
-				var packet = mod.GetPacket();
+				var packet = Mod.GetPacket();
 				packet.Write((byte)BannerBonanzaMessageType.RequestSuperBannerStealBanners);
 				packet.Write(index);
 				List<int> indexes = new List<int>();
@@ -317,7 +321,7 @@ namespace BannerBonanza.Tiles
 					packet.Write(itemIndex);
 				}
 				packet.Send();
-				return;
+				return true;
 			}
 			else // Single Player
 			{
@@ -359,7 +363,7 @@ namespace BannerBonanza.Tiles
 					for (int npctype = -10; npctype < NPCLoader.NPCCount; npctype++)
 					{
 						int vanillaBannerID = Terraria.Item.NPCtoBanner(npctype);
-						if (vanillaBannerID > 0 && !NPCID.Sets.ExcludedFromDeathTally[NPCID.FromNetId(npctype)])
+						if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(npctype)])
 						{
 							int vanillaBannerItemID = Item.BannerToItem(vanillaBannerID);
 							if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled)
@@ -381,6 +385,8 @@ namespace BannerBonanza.Tiles
 					}
 				}
 			}
-		}
+
+            return true;
+        }
 	}
 }
