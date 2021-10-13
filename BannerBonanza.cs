@@ -153,8 +153,7 @@ namespace BannerBonanza
 					{
 						added = true;
 						string message = $"Banner for {item.Name} added to Banner Rack";
-						Main.NewText(message, Color.White);
-						// TODO Add this back: NetMessage.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White);
+						Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White);
 						//Main.NewText($"Banner for {item.Name} added to Banner Rack");
 						Item clone = item.Clone();
 						clone.stack = 1;
@@ -174,8 +173,8 @@ namespace BannerBonanza
 			if (!added)
 			{
 				string message = $"No new Banners to add to Banner Rack";
-				Main.NewText($"No new Banners to add to Banner Rack");
-				//NetMessage.SendChatMessageToClient(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
+				//Main.NewText($"No new Banners to add to Banner Rack");
+				Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
 				// find closest npc that I don't have banner for.
 				//player.NPCBannerBuff
 				int nextNPCToKill = -1;
@@ -202,8 +201,8 @@ namespace BannerBonanza
 				if (nextNPCToKill != -1)
 				{
 					message = $"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}";
-					//NetMessage.SendChatMessageToClient(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
-					Main.NewText($"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}");
+					Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
+					//Main.NewText($"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}");
 				}
 			}
 			else
