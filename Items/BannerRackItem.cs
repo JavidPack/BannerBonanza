@@ -6,32 +6,29 @@ namespace BannerBonanza.Items
 {
 	public class BannerRackItem : ModItem
 	{
-		public override void SetStaticDefaults()
-		{
+		public override void SetStaticDefaults() {
 			DisplayName.SetDefault("Banner Rack");
 		}
 
-		public override void SetDefaults()
-		{
+		public override void SetDefaults() {
 			Item.CloneDefaults(ItemID.AnglerFishBanner);
-            Item.createTile = TileType<Tiles.BannerRackTile>();
-            Item.placeStyle = 0;
-            Item.width = 48;
-            Item.height = 68;
+			Item.createTile = TileType<Tiles.BannerRackTile>();
+			Item.placeStyle = 0;
+			Item.width = 48;
+			Item.height = 68;
 		}
 
-		public override void AddRecipes()
-		{
+		public override void AddRecipes() {
 			CreateRecipe()
-                .AddIngredient(ItemID.StylistKilLaKillScissorsIWish)
+				.AddIngredient(ItemID.StylistKilLaKillScissorsIWish)
 
-                .AddIngredient(ItemID.Rope)
-                .AddIngredient(ItemID.Glass, 10)
-                .AddIngredient(ItemID.Topaz, 2)
-                .AddRecipeGroup("Wood", 10)
+				.AddIngredient(ItemID.Rope)
+				.AddIngredient(ItemID.Glass, 10)
+				.AddIngredient(ItemID.Topaz, 2)
+				.AddRecipeGroup("Wood", 10)
 
-                .AddTile(TileID.HeavyWorkBench)
+				.AddTile(TileID.HeavyWorkBench)
 				.Register();
-        }
+		}
 	}
 }

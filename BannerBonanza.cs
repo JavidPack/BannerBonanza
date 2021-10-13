@@ -1,25 +1,23 @@
 using BannerBonanza.Tiles;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
 
 namespace BannerBonanza
 {
 	class BannerBonanza : Mod
 	{
 		public static BannerBonanza instance;
-		public override void Load()
-		{
+		public override void Load() {
 			instance = this;
 
 			if (ModLoader.TryGetMod("TerrariaOverhaul", out _)) {
@@ -34,8 +32,8 @@ namespace BannerBonanza
 
 		public override void PostSetupContent() {
 			if (!ModLoader.TryGetMod("RecipeBrowser", out var mod) || Main.dedServ)
-                return; 
-			
+				return;
+
 			mod.Call(new object[5]
 			{
 				"AddItemCategory",
@@ -47,36 +45,28 @@ namespace BannerBonanza
 					return Tiles.BannerRackTE.itemToBanner.ContainsKey(item.type);
 				})
 			});
-        }
+		}
 
-		public override void AddRecipeGroups()
-		{
+		public override void AddRecipeGroups() {
 			// I'm using this as a PostPostSetupContent so all mods are loaded before I access bannerToItem
 			Tiles.BannerRackTE.itemToBanner.Clear();
 			FieldInfo bannerToItemField = typeof(NPCLoader).GetField("bannerToItem", BindingFlags.NonPublic | BindingFlags.Static);
 			Dictionary<int, int> bannerToItem = (Dictionary<int, int>)bannerToItemField.GetValue(null);
-			foreach (var item in bannerToItem)
-			{
-				if (Tiles.BannerRackTE.itemToBanner.ContainsKey(item.Value))
-				{
+			foreach (var item in bannerToItem) {
+				if (Tiles.BannerRackTE.itemToBanner.ContainsKey(item.Value)) {
 					Logger.Warn($"BannerBonanza: Warning, multiple BannerIDs pointing to same ItemID: Banners:{Lang.GetNPCNameValue(item.Key)},{Lang.GetNPCNameValue(BannerRackTE.itemToBanner[item.Value])} Item:{Lang.GetItemNameValue(item.Value)}");
 				}
-				else
-				{
+				else {
 					Tiles.BannerRackTE.itemToBanner.Add(item.Value, item.Key);
 				}
 			}
 
-			for (int i = -10; i < NPCID.Count; i++)
-			{
+			for (int i = -10; i < NPCID.Count; i++) {
 				int vanillaBannerID = Terraria.Item.NPCtoBanner(i);
-				if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(i)])
-				{
+				if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(i)]) {
 					int vanillaBannerItemID = Item.BannerToItem(vanillaBannerID);
-					if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled)
-					{
-						if (!Tiles.BannerRackTE.itemToBanner.ContainsKey(vanillaBannerItemID))
-						{
+					if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled) {
+						if (!Tiles.BannerRackTE.itemToBanner.ContainsKey(vanillaBannerItemID)) {
 							Tiles.BannerRackTE.itemToBanner.Add(vanillaBannerItemID, vanillaBannerID);
 						}
 					}
@@ -84,26 +74,22 @@ namespace BannerBonanza
 			}
 		}
 
-		public override void Unload()
-		{
+		public override void Unload() {
 			instance = null;
 			Tiles.BannerRackTE.itemToBanner.Clear();
 		}
 
-		public override void HandlePacket(BinaryReader reader, int whoAmI)
-		{
+		public override void HandlePacket(BinaryReader reader, int whoAmI) {
 			BannerBonanzaMessageType msgType = (BannerBonanzaMessageType)reader.ReadByte();
 			int tileEntityIndex;
 			BannerRackTE bannerRackTE;
-			switch (msgType)
-			{
+			switch (msgType) {
 				// TODO: Hope NetSend only called once....
 				case BannerBonanzaMessageType.RequestSuperBannerStealBanners:
 					tileEntityIndex = reader.ReadInt32();
 					int indexesCount = reader.ReadInt32();
 					List<int> indexes = new List<int>();
-					for (int i = 0; i < indexesCount; i++)
-					{
+					for (int i = 0; i < indexesCount; i++) {
 						indexes.Add(reader.ReadInt32());
 					}
 					bannerRackTE = (BannerRackTE)TileEntity.ByID[tileEntityIndex];
@@ -111,8 +97,7 @@ namespace BannerBonanza
 
 
 					PutItemsInSuperBannerTE(bannerRackTE, indexes, player);
-					foreach (var itemIndex in indexes)
-					{
+					foreach (var itemIndex in indexes) {
 						NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null, whoAmI, (float)itemIndex, (float)player.inventory[itemIndex].prefix, 0f, 0, 0, 0);
 					}
 
@@ -136,21 +121,16 @@ namespace BannerBonanza
 			}
 		}
 
-		private void PutItemsInSuperBannerTE(BannerRackTE superBannerTE, List<int> indexes, Player player)
-		{
-			if (Main.netMode == NetmodeID.MultiplayerClient)
-			{
+		private void PutItemsInSuperBannerTE(BannerRackTE superBannerTE, List<int> indexes, Player player) {
+			if (Main.netMode == NetmodeID.MultiplayerClient) {
 				// uh oh
 				return;
 			}
 			bool added = false;
-			foreach (int invIndex in indexes)
-			{
+			foreach (int invIndex in indexes) {
 				Item item = player.inventory[invIndex];
-				if (!item.IsAir && BannerRackTE.itemToBanner.ContainsKey(item.type))
-				{
-					if (!superBannerTE.bannerItems.Any(x => x.type == item.type))
-					{
+				if (!item.IsAir && BannerRackTE.itemToBanner.ContainsKey(item.type)) {
+					if (!superBannerTE.bannerItems.Any(x => x.type == item.type)) {
 						added = true;
 						string message = $"Banner for {item.Name} added to Banner Rack";
 						Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White);
@@ -158,8 +138,7 @@ namespace BannerBonanza
 						Item clone = item.Clone();
 						clone.stack = 1;
 						item.stack--;
-						if (item.IsAir)
-						{
+						if (item.IsAir) {
 							item.SetDefaults(0);
 						}
 						//bool updateNeeded = superBannerTE.bannerItems.Count < 1;
@@ -170,8 +149,7 @@ namespace BannerBonanza
 					}
 				}
 			}
-			if (!added)
-			{
+			if (!added) {
 				string message = $"No new Banners to add to Banner Rack";
 				//Main.NewText($"No new Banners to add to Banner Rack");
 				Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
@@ -179,34 +157,28 @@ namespace BannerBonanza
 				//player.NPCBannerBuff
 				int nextNPCToKill = -1;
 				int nextNPCToKillLeft = 9999;
-				for (int npctype = -10; npctype < NPCLoader.NPCCount; npctype++)
-				{
+				for (int npctype = -10; npctype < NPCLoader.NPCCount; npctype++) {
 					int vanillaBannerID = Terraria.Item.NPCtoBanner(npctype);
-					if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(npctype)])
-					{
+					if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(npctype)]) {
 						int vanillaBannerItemID = Item.BannerToItem(vanillaBannerID);
-						if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled)
-						{
+						if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled) {
 							int killsToBanner = ItemID.Sets.KillsToBanner[vanillaBannerItemID];
 							int killsLeft = killsToBanner - (NPC.killCount[vanillaBannerID] % killsToBanner);
 
-							if (killsLeft < nextNPCToKillLeft && !superBannerTE.bannerItems.Any(x => x.type == vanillaBannerItemID))
-							{
+							if (killsLeft < nextNPCToKillLeft && !superBannerTE.bannerItems.Any(x => x.type == vanillaBannerItemID)) {
 								nextNPCToKillLeft = killsLeft;
 								nextNPCToKill = npctype;
 							}
 						}
 					}
 				}
-				if (nextNPCToKill != -1)
-				{
+				if (nextNPCToKill != -1) {
 					message = $"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}";
 					Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
 					//Main.NewText($"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}");
 				}
 			}
-			else
-			{
+			else {
 				superBannerTE.updateNeeded = true;
 			}
 
@@ -275,10 +247,8 @@ namespace BannerBonanza
 
 	class StylistShop : GlobalNPC
 	{
-		public override void SetupShop(int type, Chest shop, ref int nextSlot)
-		{
-			if (type == NPCID.Stylist)
-			{
+		public override void SetupShop(int type, Chest shop, ref int nextSlot) {
+			if (type == NPCID.Stylist) {
 				shop.item[nextSlot].SetDefaults(ItemID.StylistKilLaKillScissorsIWish);
 				shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 50);
 				//shop.item[nextSlot].value = Item.buyPrice(0, 50);

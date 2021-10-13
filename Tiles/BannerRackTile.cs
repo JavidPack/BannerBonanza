@@ -1,23 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
 using Terraria.ObjectData;
-using System.Linq;
-using System.Collections.Generic;
-using System;
-using Terraria.GameContent;
+using static Terraria.ModLoader.ModContent;
 
 namespace BannerBonanza.Tiles
 {
 	public class BannerRackTile : ModTile
 	{
-        public override void SetStaticDefaults()
-		{
+		public override void SetStaticDefaults() {
 			Main.tileFrameImportant[Type] = true;
 			Main.tileNoAttach[Type] = true;
 			Main.tileLavaDeath[Type] = true;
@@ -46,48 +44,40 @@ namespace BannerBonanza.Tiles
 			AnimationFrameHeight = 72;
 		}
 
-		private string MapEntryFunction(string arg1, int i, int j)
-		{
+		private string MapEntryFunction(string arg1, int i, int j) {
 			Tile tile = Main.tile[i, j];
 			int left = i - (tile.frameX % 54 / 18);
 			int top = j - (tile.frameY / 18);
 			int index = GetInstance<BannerRackTE>().Find(left, top);
-			if (index == -1)
-			{
+			if (index == -1) {
 				return arg1 + "\n" + "Error";
 			}
 			BannerRackTE bannerRackTE = (BannerRackTE)TileEntity.ByID[index];
 			return arg1 + "\n" + bannerRackTE.GetHoverString();
 		}
 
-		public override void AnimateTile(ref int frame, ref int frameCounter)
-		{
-			if (++frameCounter > 4)
-			{
+		public override void AnimateTile(ref int frame, ref int frameCounter) {
+			if (++frameCounter > 4) {
 				frameCounter = 0;
-				if (++frame > 5)
-				{
+				if (++frame > 5) {
 					frame = 0;
 				}
 			}
 		}
 
-        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
-        {
+		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) {
 			Tile t = Main.tile[i, j];
-			
 
-            if (t.frameX == 0 && t.frameY == 0) // t.frameX % 54 == 0
-            {
+
+			if (t.frameX == 0 && t.frameY == 0) // t.frameX % 54 == 0
+			{
 				Main.instance.TilesRenderer.AddSpecialLegacyPoint(i, j);
-            }
+			}
 		}
 
-        public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
-		{
+		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) {
 			Vector2 zero = new Vector2((float)Main.offScreenRange, (float)Main.offScreenRange);
-			if (Main.drawToScreen)
-			{
+			if (Main.drawToScreen) {
 				zero = Vector2.Zero;
 			}
 
@@ -95,18 +85,15 @@ namespace BannerBonanza.Tiles
 			//int style = t.frameX / 54;
 
 			int index = GetInstance<BannerRackTE>().Find(i, j);
-			if (index == -1)
-			{
+			if (index == -1) {
 				return;
 			}
 			BannerRackTE bannerRackTE = (BannerRackTE)TileEntity.ByID[index];
-			if (bannerRackTE.bannerItems.Count > 0)
-			{
+			if (bannerRackTE.bannerItems.Count > 0) {
 				bannerRackTE.ClientUpdate();
 				int leftItemTrim = bannerRackTE.counter / 2;
 				int rightItemTrim = 16 - leftItemTrim;
-				for (int drawItemNumber = 0; drawItemNumber < 3; drawItemNumber++)
-				{
+				for (int drawItemNumber = 0; drawItemNumber < 3; drawItemNumber++) {
 					Color color = Lighting.GetColor(i + drawItemNumber, j + 1);
 					if (bannerRackTE.drawItemIndexs[drawItemNumber] < 0)
 						continue;
@@ -132,25 +119,22 @@ namespace BannerBonanza.Tiles
 						}
 
 						Main.instance.LoadTiles(item.createTile);
-                        var tileTexture = TextureAssets.Tile[item.createTile];
+						var tileTexture = TextureAssets.Tile[item.createTile];
 						//Texture2D tileTexture = Main.tileTexture[item.createTile];
 
 						int[] heights = tod.CoordinateHeights;
 						int heightOffSet = 0;
 						int heightOffSetTexture = 0;
 						int leftItemNudge = 0;
-						for (int sub = 0; sub < heights.Length; sub++)
-						{
+						for (int sub = 0; sub < heights.Length; sub++) {
 							//Rectangle sourceRectangle = new Rectangle(x, y + heightOffSet, 1, 1);
 							Rectangle sourceRectangle = new Rectangle(x, y + heightOffSetTexture, tod.CoordinateWidth, tod.CoordinateHeights[sub]);
-							if (drawItemNumber == 0)
-							{
+							if (drawItemNumber == 0) {
 								sourceRectangle.X += leftItemTrim;
 								sourceRectangle.Width -= leftItemTrim;
 								leftItemNudge = leftItemTrim;
 							}
-							if (drawItemNumber == 2)
-							{
+							if (drawItemNumber == 2) {
 								sourceRectangle.Width -= rightItemTrim;
 							}
 							Main.spriteBatch.Draw(tileTexture.Value,
@@ -166,20 +150,16 @@ namespace BannerBonanza.Tiles
 			}
 		}
 
-		public override void NearbyEffects(int i, int j, bool closer)
-		{
+		public override void NearbyEffects(int i, int j, bool closer) {
 			Tile tile = Main.tile[i, j];
-			if (tile.frameX == 0 && tile.frameY == 0)
-			{
-				if (closer)
-				{
+			if (tile.frameX == 0 && tile.frameY == 0) {
+				if (closer) {
 					Player player = Main.LocalPlayer;
 					int left = i - (tile.frameX % 54 / 18);
 					int top = j - (tile.frameY / 18);
 
 					int index = GetInstance<BannerRackTE>().Find(left, top);
-					if (index == -1)
-					{
+					if (index == -1) {
 						return;
 					}
 					BannerRackTE bannerRackTE = (BannerRackTE)TileEntity.ByID[index];
@@ -189,25 +169,21 @@ namespace BannerBonanza.Tiles
 		}
 
 		// SP, Server, Client
-		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
-		{
+		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) {
 			Tile tile = Main.tile[i, j];
 			int left = i - (tile.frameX % 54 / 18);
 			int top = j - (tile.frameY / 18);
 
 			int index = GetInstance<BannerRackTE>().Find(left, top);
-			if (index == -1)
-			{
+			if (index == -1) {
 				return;
 			}
 			BannerRackTE bannerRackTE = (BannerRackTE)TileEntity.ByID[index];
-			if (bannerRackTE.bannerItems.Count > 0)
-			{
+			if (bannerRackTE.bannerItems.Count > 0) {
 				fail = true;
 				if (WorldGen.destroyObject)
 					fail = false;
-				if (Main.netMode == NetmodeID.MultiplayerClient)
-				{
+				if (Main.netMode == NetmodeID.MultiplayerClient) {
 					// TODO: Send ModPacket identifying selected Banner.
 					return;
 				}
@@ -243,8 +219,7 @@ namespace BannerBonanza.Tiles
 		}
 
 		// SP Client and Server
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
+		public override void KillMultiTile(int i, int j, int frameX, int frameY) {
 			// Reminder: Item.NewItem does nothing on Client
 			//Tile t = Main.tile[i, j];
 			//if (t.active())
@@ -254,8 +229,7 @@ namespace BannerBonanza.Tiles
 			GetInstance<BannerRackTE>().Kill(i, j); // This should call OnKill
 		}
 
-		public override void MouseOver(int i, int j)
-		{
+		public override void MouseOver(int i, int j) {
 			Player player = Main.LocalPlayer;
 			player.noThrow = 2;
 			player.cursorItemIconEnabled = true;
@@ -267,8 +241,7 @@ namespace BannerBonanza.Tiles
 			int top = j - (tile.frameY / 18);
 
 			int index = GetInstance<BannerRackTE>().Find(left, top);
-			if (index == -1)
-			{
+			if (index == -1) {
 				return;
 			}
 			BannerRackTE bannerRackTE = (BannerRackTE)TileEntity.ByID[index];
@@ -278,34 +251,29 @@ namespace BannerBonanza.Tiles
 			// % per event too.
 			// Event is based on which event is happening?
 		}
-		
-		public override bool RightClick(int i, int j)
-		{
+
+		public override bool RightClick(int i, int j) {
 			Player player = Main.LocalPlayer;
 			Tile tile = Main.tile[i, j];
 			int left = i - (tile.frameX % 54 / 18);
 			int top = j - (tile.frameY / 18);
 
 			int index = GetInstance<BannerRackTE>().Find(left, top);
-			if (index == -1)
-			{
+			if (index == -1) {
 				return true;
 			}
 
 			BannerRackTE bannerRackTE = (BannerRackTE)TileEntity.ByID[index];
 
 			// if Client, not SP, ask server to move items for you.
-			if (Main.netMode == NetmodeID.MultiplayerClient)
-			{
+			if (Main.netMode == NetmodeID.MultiplayerClient) {
 				var packet = Mod.GetPacket();
 				packet.Write((byte)BannerBonanzaMessageType.RequestSuperBannerStealBanners);
 				packet.Write(index);
 				List<int> indexes = new List<int>();
-				for (int itemIndex = 0; itemIndex < 50; itemIndex++)
-				{
+				for (int itemIndex = 0; itemIndex < 50; itemIndex++) {
 					Item item = player.inventory[itemIndex];
-					if (!item.IsAir && !player.inventory[itemIndex].favorited && BannerRackTE.itemToBanner.ContainsKey(item.type))
-					{
+					if (!item.IsAir && !player.inventory[itemIndex].favorited && BannerRackTE.itemToBanner.ContainsKey(item.type)) {
 						// Inform Server of current item (just to be safe?)
 						// TODO: I think NetMessage 5 doesn't sync mod data.
 						NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null, player.whoAmI, (float)itemIndex, (float)player.inventory[itemIndex].prefix, 0f, 0, 0, 0);
@@ -316,8 +284,7 @@ namespace BannerBonanza.Tiles
 					}
 				}
 				packet.Write(indexes.Count);
-				foreach (var itemIndex in indexes)
-				{
+				foreach (var itemIndex in indexes) {
 					packet.Write(itemIndex);
 				}
 				packet.Send();
@@ -329,20 +296,16 @@ namespace BannerBonanza.Tiles
 
 				// foreach item in inventory, if 
 				bool added = false;
-				for (int invIndex = 0; invIndex < 54; invIndex++)
-				{
+				for (int invIndex = 0; invIndex < 54; invIndex++) {
 					Item item = player.inventory[invIndex];
-					if (!item.IsAir && BannerRackTE.itemToBanner.ContainsKey(item.type))
-					{
-						if (!bannerRackTE.bannerItems.Any(x => x.type == item.type))
-						{
+					if (!item.IsAir && BannerRackTE.itemToBanner.ContainsKey(item.type)) {
+						if (!bannerRackTE.bannerItems.Any(x => x.type == item.type)) {
 							added = true;
 							Main.NewText($"Banner for {item.Name} added to Banner Rack");
 							Item clone = item.Clone();
 							clone.stack = 1;
 							item.stack--;
-							if (item.IsAir)
-							{
+							if (item.IsAir) {
 								item.SetDefaults(0);
 							}
 							//bool updateNeeded = superBannerTE.bannerItems.Count < 1;
@@ -353,40 +316,34 @@ namespace BannerBonanza.Tiles
 						}
 					}
 				}
-				if (!added)
-				{
+				if (!added) {
 					Main.NewText($"No new Banners to add to Banner Rack");
 					// find closest npc that I don't have banner for.
 					//player.NPCBannerBuff
 					int nextNPCToKill = -1;
 					int nextNPCToKillLeft = 9999;
-					for (int npctype = -10; npctype < NPCLoader.NPCCount; npctype++)
-					{
+					for (int npctype = -10; npctype < NPCLoader.NPCCount; npctype++) {
 						int vanillaBannerID = Terraria.Item.NPCtoBanner(npctype);
-						if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(npctype)])
-						{
+						if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(npctype)]) {
 							int vanillaBannerItemID = Item.BannerToItem(vanillaBannerID);
-							if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled)
-							{
+							if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled) {
 								int killsToBanner = ItemID.Sets.KillsToBanner[vanillaBannerItemID];
 								int killsLeft = killsToBanner - (NPC.killCount[vanillaBannerID] % killsToBanner);
 
-								if (killsLeft < nextNPCToKillLeft && !bannerRackTE.bannerItems.Any(x => x.type == vanillaBannerItemID))
-								{
+								if (killsLeft < nextNPCToKillLeft && !bannerRackTE.bannerItems.Any(x => x.type == vanillaBannerItemID)) {
 									nextNPCToKillLeft = killsLeft;
 									nextNPCToKill = npctype;
 								}
 							}
 						}
 					}
-					if (nextNPCToKill != -1)
-					{
+					if (nextNPCToKill != -1) {
 						Main.NewText($"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}");
 					}
 				}
 			}
 
-            return true;
-        }
+			return true;
+		}
 	}
 }
