@@ -151,7 +151,7 @@ namespace BannerBonanza.Tiles
 
 		public override bool IsTileValidForEntity(int i, int j) {
 			Tile tile = Main.tile[i, j];
-			return tile.IsActive && tile.type == TileType<BannerRackTile>() && tile.frameX % 54 == 0 && tile.frameY == 0;
+			return tile.HasTile && tile.TileType == TileType<BannerRackTile>() && tile.TileFrameX % 54 == 0 && tile.TileFrameY == 0;
 		}
 
 		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate) {

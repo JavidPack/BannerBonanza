@@ -46,8 +46,8 @@ namespace BannerBonanza.Tiles
 
 		private string MapEntryFunction(string arg1, int i, int j) {
 			Tile tile = Main.tile[i, j];
-			int left = i - (tile.frameX % 54 / 18);
-			int top = j - (tile.frameY / 18);
+			int left = i - (tile.TileFrameX % 54 / 18);
+			int top = j - (tile.TileFrameY / 18);
 			int index = GetInstance<BannerRackTE>().Find(left, top);
 			if (index == -1) {
 				return arg1 + "\n" + "Error";
@@ -69,7 +69,7 @@ namespace BannerBonanza.Tiles
 			Tile t = Main.tile[i, j];
 
 
-			if (t.frameX == 0 && t.frameY == 0) // t.frameX % 54 == 0
+			if (t.TileFrameX == 0 && t.TileFrameY == 0) // t.frameX % 54 == 0
 			{
 				Main.instance.TilesRenderer.AddSpecialLegacyPoint(i, j);
 			}
@@ -152,11 +152,11 @@ namespace BannerBonanza.Tiles
 
 		public override void NearbyEffects(int i, int j, bool closer) {
 			Tile tile = Main.tile[i, j];
-			if (tile.frameX == 0 && tile.frameY == 0) {
+			if (tile.TileFrameX == 0 && tile.TileFrameY == 0) {
 				if (closer) {
 					Player player = Main.LocalPlayer;
-					int left = i - (tile.frameX % 54 / 18);
-					int top = j - (tile.frameY / 18);
+					int left = i - (tile.TileFrameX % 54 / 18);
+					int top = j - (tile.TileFrameY / 18);
 
 					int index = GetInstance<BannerRackTE>().Find(left, top);
 					if (index == -1) {
@@ -171,8 +171,8 @@ namespace BannerBonanza.Tiles
 		// SP, Server, Client
 		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) {
 			Tile tile = Main.tile[i, j];
-			int left = i - (tile.frameX % 54 / 18);
-			int top = j - (tile.frameY / 18);
+			int left = i - (tile.TileFrameX % 54 / 18);
+			int top = j - (tile.TileFrameY / 18);
 
 			int index = GetInstance<BannerRackTE>().Find(left, top);
 			if (index == -1) {
@@ -237,8 +237,8 @@ namespace BannerBonanza.Tiles
 			player.cursorItemIconID = -1;
 
 			Tile tile = Main.tile[i, j];
-			int left = i - (tile.frameX % 54 / 18);
-			int top = j - (tile.frameY / 18);
+			int left = i - (tile.TileFrameX % 54 / 18);
+			int top = j - (tile.TileFrameY / 18);
 
 			int index = GetInstance<BannerRackTE>().Find(left, top);
 			if (index == -1) {
@@ -255,8 +255,8 @@ namespace BannerBonanza.Tiles
 		public override bool RightClick(int i, int j) {
 			Player player = Main.LocalPlayer;
 			Tile tile = Main.tile[i, j];
-			int left = i - (tile.frameX % 54 / 18);
-			int top = j - (tile.frameY / 18);
+			int left = i - (tile.TileFrameX % 54 / 18);
+			int top = j - (tile.TileFrameY / 18);
 
 			int index = GetInstance<BannerRackTE>().Find(left, top);
 			if (index == -1) {
