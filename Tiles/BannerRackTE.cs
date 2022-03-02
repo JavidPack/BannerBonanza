@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -171,7 +172,7 @@ namespace BannerBonanza.Tiles
 					// TODO: Hmmmm, Item.NewItem would destroy modData...
 					// TODO: Prep for stack > 1 code?
 					// nobroadcast true to prevent stuff.
-					int index = Item.NewItem(Position.X * 16, Position.Y * 16, 54, 72, item.type, item.stack, true);
+					int index = Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.X * 16, Position.Y * 16, 54, 72, item.type, item.stack, true);
 					Vector2 position = Main.item[index].position;
 					Main.item[index] = item.Clone();
 					Main.item[index].position = position;

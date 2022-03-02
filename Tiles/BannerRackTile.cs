@@ -188,7 +188,7 @@ namespace BannerBonanza.Tiles
 					return;
 				}
 				Item item = bannerRackTE.bannerItems[bannerRackTE.bannerItems.Count - 1];
-				Item.NewItem(i * 16, j * 16, 54, 72, item.type);
+				Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 54, 72, item.type);
 				bannerRackTE.bannerItems.RemoveAt(bannerRackTE.bannerItems.Count - 1);
 				bannerRackTE.updateNeeded = true;
 				bannerRackTE.UpdateDrawItemIndexes();
@@ -224,7 +224,7 @@ namespace BannerBonanza.Tiles
 			//Tile t = Main.tile[i, j];
 			//if (t.active())
 			{
-				Item.NewItem(i * 16, j * 16, 54, 72, ItemType<Items.BannerRackItem>());
+				Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 54, 72, ItemType<Items.BannerRackItem>());
 			}
 			GetInstance<BannerRackTE>().Kill(i, j); // This should call OnKill
 		}
