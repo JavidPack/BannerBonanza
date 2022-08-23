@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using log4net.Repository.Hierarchy;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
@@ -35,8 +37,20 @@ namespace BannerBonanza.Tiles
 
 		public override void LoadData(TagCompound tag) {
 			bannerItems.AddRange(tag.GetList<TagCompound>("BannerItems").Select(ItemIO.Load));
-			unloadedBannerItems.AddRange(bannerItems.Where(x => x.type == ItemID.Count));
-			bannerItems.RemoveAll(x => x.type == ItemID.Count);
+			unloadedBannerItems.AddRange(bannerItems.Where(x => x.ModItem is UnloadedItem)); // TODO: Bug? This isn't unloaded item anymore
+			foreach (var item in unloadedBannerItems) {
+				bannerItems.Remove(item);
+			}
+			List<Item> toRemove = new();
+			foreach (var item in bannerItems) {
+				if (!itemToBanner.ContainsKey(item.type)) {
+					Mod.Logger.Warn($"For some reason the item \"{Lang.GetItemNameValue(item.type)}\" was on a banner but is not seen as a banner item by the game anymore.");
+					toRemove.Add(item);
+				}
+			}
+			foreach (var item in toRemove) {
+				bannerItems.Remove(item);
+			}
 		}
 
 		public override void NetSend(BinaryWriter writer) {
@@ -198,7 +212,7 @@ namespace BannerBonanza.Tiles
 			Player player = Main.LocalPlayer;
 			foreach (var item in bannerItems) {
 				int type = item.type;
-				if (type != ItemID.Count && ItemID.Sets.BannerStrength[type].Enabled) {
+				if (/*type != ItemID.Count && */ItemID.Sets.BannerStrength[type].Enabled) { // TODO: Bug? This isn't unloaded item anymore
 					int bannerID = itemToBanner[type];
 
 					Main.SceneMetrics.NPCBannerBuff[bannerID] = true;

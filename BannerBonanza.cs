@@ -54,7 +54,7 @@ namespace BannerBonanza
 			Dictionary<int, int> bannerToItem = (Dictionary<int, int>)bannerToItemField.GetValue(null);
 			foreach (var item in bannerToItem) {
 				if (Tiles.BannerRackTE.itemToBanner.ContainsKey(item.Value)) {
-					Logger.Warn($"BannerBonanza: Warning, multiple BannerIDs pointing to same ItemID: Banners:{Lang.GetNPCNameValue(item.Key)},{Lang.GetNPCNameValue(BannerRackTE.itemToBanner[item.Value])} Item:{Lang.GetItemNameValue(item.Value)}");
+					Logger.Warn($"Warning, multiple BannerIDs pointing to same ItemID: Banners:{Lang.GetNPCNameValue(item.Key)},{Lang.GetNPCNameValue(BannerRackTE.itemToBanner[item.Value])} Item:{Lang.GetItemNameValue(item.Value)}");
 				}
 				else {
 					Tiles.BannerRackTE.itemToBanner.Add(item.Value, item.Key);
@@ -116,7 +116,7 @@ namespace BannerBonanza
 				//	superBannerTE.stringUpToDate = false; 
 				//	break;
 				default:
-					Logger.Warn("BannerBonanza: Unknown Message type: " + msgType);
+					Logger.Warn("Unknown Message type: " + msgType);
 					break;
 			}
 		}
