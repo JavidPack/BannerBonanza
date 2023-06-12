@@ -130,7 +130,7 @@ namespace BannerBonanza.Tiles
 			for (int i = NPCID.Count; i < NPCLoader.NPCCount; i++) {
 				int bannernum = Item.NPCtoBanner(i);
 				int itemnum = Item.BannerToItem(bannernum);
-				if (bannernum > 0 && itemnum > ItemID.Count) {
+				if (bannernum > 0 && itemnum >= ItemID.Count) {
 					ModItem item = ItemLoader.GetItem(itemnum);
 					int currentCount;
 					BannersPerMod.TryGetValue(item.Mod, out currentCount);
@@ -212,7 +212,7 @@ namespace BannerBonanza.Tiles
 			Player player = Main.LocalPlayer;
 			foreach (var item in bannerItems) {
 				int type = item.type;
-				if (/*type != ItemID.Count && */ItemID.Sets.BannerStrength[type].Enabled) { // TODO: Bug? This isn't unloaded item anymore
+				if (item.ModItem is not UnloadedItem && ItemID.Sets.BannerStrength[type].Enabled) {
 					int bannerID = itemToBanner[type];
 
 					Main.SceneMetrics.NPCBannerBuff[bannerID] = true;

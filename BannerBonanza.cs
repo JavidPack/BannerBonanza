@@ -23,32 +23,10 @@ namespace BannerBonanza
 			if (ModLoader.TryGetMod("TerrariaOverhaul", out _)) {
 				Logger.Warn("Terraria Overhaul detected, banner rack will not work because of Terraria Overhaul code changes.");
 			}
-
-			//if (ModLoader.version == new Version(0, 10, 0, 2))
-			//{
-			//	throw new Exception("\nThis mod mysteriously doesn't work with 0.10.0.2\n\n") { HelpLink = "www.google.com"};
-			//}
 		}
 
 		public override void PostSetupContent() {
-			if (!ModLoader.TryGetMod("RecipeBrowser", out var mod) || Main.dedServ)
-				return;
-
-			mod.Call(new object[5]
-			{
-				"AddItemCategory",
-				"Banners",
-				"Tiles",
-				Assets.Request<Texture2D>("RecipeBrowserBannerCategoryIcon").Value, // 24x24 icon
-				(Predicate<Item>)((Item item) =>
-				{
-					return Tiles.BannerRackTE.itemToBanner.ContainsKey(item.type);
-				})
-			});
-		}
-
-		public override void AddRecipeGroups() {
-			// I'm using this as a PostPostSetupContent so all mods are loaded before I access bannerToItem
+			// This code was previously in AddRecipeGroups because "I'm using this as a PostPostSetupContent so all mods are loaded before I access bannerToItem". I don't think this is right, it should be fine here.
 			Tiles.BannerRackTE.itemToBanner.Clear();
 			FieldInfo bannerToItemField = typeof(NPCLoader).GetField("bannerToItem", BindingFlags.NonPublic | BindingFlags.Static);
 			Dictionary<int, int> bannerToItem = (Dictionary<int, int>)bannerToItemField.GetValue(null);
@@ -72,6 +50,21 @@ namespace BannerBonanza
 					}
 				}
 			}
+
+			if (!ModLoader.TryGetMod("RecipeBrowser", out var mod) || Main.dedServ)
+				return;
+
+			mod.Call(new object[5]
+			{
+				"AddItemCategory",
+				"Banners",
+				"Tiles",
+				Assets.Request<Texture2D>("RecipeBrowserBannerCategoryIcon", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, // 24x24 icon
+				(Predicate<Item>)((Item item) =>
+				{
+					return Tiles.BannerRackTE.itemToBanner.ContainsKey(item.type);
+				})
+			});
 		}
 
 		public override void Unload() {
@@ -242,25 +235,6 @@ namespace BannerBonanza
 
 		//	return item;
 		//}
-
-	}
-
-	class StylistShop : GlobalNPC
-	{
-		public override void SetupShop(int type, Chest shop, ref int nextSlot) {
-			if (type == NPCID.Stylist) {
-				shop.item[nextSlot].SetDefaults(ItemID.StylistKilLaKillScissorsIWish);
-				shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 50);
-				//shop.item[nextSlot].value = Item.buyPrice(0, 50);
-				shop.item[nextSlot].SetNameOverride("(I don't want to die)");
-				nextSlot++;
-
-				//shop.item[nextSlot].SetDefaults(ItemType<Items.CarKey>());
-				//shop.item[nextSlot].shopCustomPrice = new int?(2);
-				//shop.item[nextSlot].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-				//nextSlot++;
-			}
-		}
 	}
 
 	// TODO: Might need a message at end with a Recipe.FindRecipes(); call.

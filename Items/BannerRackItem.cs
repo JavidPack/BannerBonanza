@@ -6,10 +6,6 @@ namespace BannerBonanza.Items
 {
 	public class BannerRackItem : ModItem
 	{
-		public override void SetStaticDefaults() {
-			DisplayName.SetDefault("Banner Rack");
-		}
-
 		public override void SetDefaults() {
 			Item.CloneDefaults(ItemID.AnglerFishBanner);
 			Item.createTile = TileType<Tiles.BannerRackTile>();

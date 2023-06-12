@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
@@ -37,8 +38,7 @@ namespace BannerBonanza.Tiles
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(GetInstance<BannerRackTE>().Hook_AfterPlacement, -1, 0, true);
 			TileObjectData.addTile(Type);
 
-			ModTranslation name = CreateMapEntryName();
-			name.SetDefault("Banner Rack");
+			LocalizedText name = CreateMapEntryName();
 			AddMapEntry(new Color(13, 88, 130), name, MapEntryFunction);
 
 			AnimationFrameHeight = 72;
@@ -223,9 +223,9 @@ namespace BannerBonanza.Tiles
 			// Reminder: Item.NewItem does nothing on Client
 			//Tile t = Main.tile[i, j];
 			//if (t.active())
-			{
-				Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 54, 72, ItemType<Items.BannerRackItem>());
-			}
+			//{
+			//	Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 54, 72, ItemType<Items.BannerRackItem>());
+			//}
 			GetInstance<BannerRackTE>().Kill(i, j); // This should call OnKill
 		}
 

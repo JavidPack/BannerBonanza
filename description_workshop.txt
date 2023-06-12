@@ -1,3 +1,6 @@
+[img]https://i.imgur.com/W2c5CX6.gif[/img]
+
+[h1]Overview[/h1]
 Banner Bonanza lets you combine all of your banners into one, easy to maintain Banner Rack.
 
 First, craft a Banner Rack from Rope, Glass, Topaz, and Stylish Scissors at a Heavy Work Bench and place it.
@@ -11,3 +14,10 @@ Right click on Banner Rack for a hint on which banner to work towards next.
 Hover over a Banner Rack to see the progress on your collection.
 
 You may be wondering how to get Stylish Scissors. The Stylist drops it rarely, so you'll have to be a bit cruel with the lava buckets, but it is well worth the guilt. 
+
+[h1]Links[/h1]
+Source code hosted on [url=github.com/JavidPack/BannerBonanza]GitHub[/url], collaboration welcome
+For questions or suggestions, come to my Discord: [url=discord.gg/w8Hcwby][img]https://discordapp.com/api/guilds/276235094622994433/widget.png?style=shield[/img][/url]
+Bug reports in the comments here will not be seen, come to Discord or Github to report issues.
+If you'd like to support my mods, I have a Patreon [url=www.patreon.com/jopojelly][img]https://i.imgur.com/xII2DwJ.png[/img][/url]
+[url=https://steamcommunity.com/profiles/76561198025715866/myworkshopfiles/?appid=1281930]Check out all my mods[/url]
