@@ -1,5 +1,5 @@
 author = jopojelly, @VoxelFox
-version = 1.4
+version = 1.4.0.1
 displayName = Banner Bonanza
 buildIgnore = .vs\*, *.csproj, *.user, obj\*, bin\*, *.config, lib\*, .gitignore, .git\*, ignore\*,
 homepage = https://forums.terraria.org/index.php?threads/banner-bonanza-collect-and-consolidate-banners.60797/
