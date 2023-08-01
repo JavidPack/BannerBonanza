@@ -1,8 +1,8 @@
 Items: {
 	BannerRackItem: {
-		DisplayName: Стойка для баннеров
-		Tooltip: Разместите баннеры на стойке
+		DisplayName: Стойка для знамён
+		Tooltip: Разместите знамя на стойке
 	}
 }
 
-Tiles.BannerRackTile.MapEntry: Стойка для баннеров
+Tiles.BannerRackTile.MapEntry: Стойка для знамён
