@@ -143,9 +143,8 @@ namespace BannerBonanza
 				}
 			}
 			if (!added) {
-				string message = $"No new Banners to add to Banner Rack";
-				//Main.NewText($"No new Banners to add to Banner Rack");
-				Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
+				string message = "No new Banners to add to Banner Rack";
+
 				// find closest npc that I don't have banner for.
 				//player.NPCBannerBuff
 				int nextNPCToKill = -1;
@@ -165,11 +164,12 @@ namespace BannerBonanza
 						}
 					}
 				}
+				
 				if (nextNPCToKill != -1) {
-					message = $"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}";
-					Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
-					//Main.NewText($"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}");
+					message += $"\nTry killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}";
 				}
+
+				Terraria.Chat.ChatHelper.SendChatMessageToClient(NetworkText.FromLiteral(message), Color.White, player.whoAmI);
 			}
 			else {
 				superBannerTE.updateNeeded = true;
