@@ -33,7 +33,7 @@ namespace BannerBonanza.Tiles
 				16
 			};
 			TileObjectData.newTile.StyleHorizontal = true;
-			TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom, TileObjectData.newTile.Width, 0);
+			TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.Platform, TileObjectData.newTile.Width, 0);
 
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(GetInstance<BannerRackTE>().Hook_AfterPlacement, -1, 0, true);
 			TileObjectData.addTile(Type);
@@ -54,6 +54,19 @@ namespace BannerBonanza.Tiles
 			}
 			BannerRackTE bannerRackTE = (BannerRackTE)TileEntity.ByID[index];
 			return arg1 + "\n" + bannerRackTE.GetHoverString();
+		}
+
+		public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY)
+		{
+			Tile tile = Main.tile[i, j];
+			int left = i - (tile.TileFrameX % 54 / 18);
+			int top = j - (tile.TileFrameY / 18);
+			int right = left + 2;
+
+			if (WorldGen.IsBelowANonHammeredPlatform(left, top) || WorldGen.IsBelowANonHammeredPlatform(right, top))
+			{
+				offsetY -= 8;
+			}
 		}
 
 		public override void AnimateTile(ref int frame, ref int frameCounter) {
@@ -83,6 +96,9 @@ namespace BannerBonanza.Tiles
 
 			Tile t = Main.tile[i, j];
 			//int style = t.frameX / 54;
+			int left = i - (t.TileFrameX % 54 / 18);
+			int top = j - (t.TileFrameY / 18);
+			int right = left + 2;
 
 			int index = GetInstance<BannerRackTE>().Find(i, j);
 			if (index == -1) {
@@ -123,7 +139,7 @@ namespace BannerBonanza.Tiles
 						//Texture2D tileTexture = Main.tileTexture[item.createTile];
 
 						int[] heights = tod.CoordinateHeights;
-						int heightOffSet = 0;
+						int heightOffSet = WorldGen.IsBelowANonHammeredPlatform(left, top) || WorldGen.IsBelowANonHammeredPlatform(right, top) ? -8 : 0;
 						int heightOffSetTexture = 0;
 						int leftItemNudge = 0;
 						for (int sub = 0; sub < heights.Length; sub++) {
