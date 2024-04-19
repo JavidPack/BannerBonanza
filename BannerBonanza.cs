@@ -122,7 +122,7 @@ namespace BannerBonanza
 			bool added = false;
 			foreach (int invIndex in indexes) {
 				Item item = player.inventory[invIndex];
-				if (!item.IsAir && BannerRackTE.itemToBanner.ContainsKey(item.type)) {
+				if (!item.IsAir && !item.favorited && BannerRackTE.itemToBanner.ContainsKey(item.type)) {
 					if (!superBannerTE.bannerItems.Any(x => x.type == item.type)) {
 						added = true;
 						string message = $"Banner for {item.Name} added to Banner Rack";

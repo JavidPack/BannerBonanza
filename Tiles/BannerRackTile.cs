@@ -294,7 +294,7 @@ namespace BannerBonanza.Tiles
 				List<int> indexes = new List<int>();
 				for (int itemIndex = 0; itemIndex < 50; itemIndex++) {
 					Item item = player.inventory[itemIndex];
-					if (!item.IsAir && !player.inventory[itemIndex].favorited && BannerRackTE.itemToBanner.ContainsKey(item.type)) {
+					if (!item.IsAir && !item.favorited && !player.inventory[itemIndex].favorited && BannerRackTE.itemToBanner.ContainsKey(item.type)) {
 						// Inform Server of current item (just to be safe?)
 						// TODO: I think NetMessage 5 doesn't sync mod data.
 						NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null, player.whoAmI, (float)itemIndex, (float)player.inventory[itemIndex].prefix, 0f, 0, 0, 0);
@@ -319,7 +319,7 @@ namespace BannerBonanza.Tiles
 				bool added = false;
 				for (int invIndex = 0; invIndex < 54; invIndex++) {
 					Item item = player.inventory[invIndex];
-					if (!item.IsAir && BannerRackTE.itemToBanner.ContainsKey(item.type)) {
+					if (!item.IsAir && !item.favorited && BannerRackTE.itemToBanner.ContainsKey(item.type)) {
 						if (!bannerRackTE.bannerItems.Any(x => x.type == item.type)) {
 							added = true;
 							Main.NewText($"Banner for {item.Name} added to Banner Rack");
