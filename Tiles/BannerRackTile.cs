@@ -55,6 +55,9 @@ namespace BannerBonanza.Tiles
 			int top = j - (tile.TileFrameY / 18);
 			int index = GetInstance<BannerRackTE>().Find(left, top);
 			if (index == -1) {
+				if(!Main.sectionManager.TileLoaded(left, top)) {
+					return arg1 + "\n" + "World section not loaded yet";
+				}
 				return arg1 + "\n" + "Error";
 			}
 			BannerRackTE bannerRackTE = (BannerRackTE)TileEntity.ByID[index];
