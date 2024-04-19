@@ -33,9 +33,14 @@ namespace BannerBonanza.Tiles
 				16
 			};
 			TileObjectData.newTile.StyleHorizontal = true;
-			TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.Platform, TileObjectData.newTile.Width, 0);
-
+			TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.PlanterBox, TileObjectData.newTile.Width, 0);
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(GetInstance<BannerRackTE>().Hook_AfterPlacement, -1, 0, true);
+			
+			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+			TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.Platform, TileObjectData.newTile.Width, 0);
+			TileObjectData.newAlternate.DrawYOffset = -8;
+			TileObjectData.addAlternate(0);
+
 			TileObjectData.addTile(Type);
 
 			LocalizedText name = CreateMapEntryName();
