@@ -5,15 +5,32 @@ Banner Bonanza lets you combine all of your banners into one, easy to maintain B
 
 First, craft a Banner Rack from Rope, Glass, Topaz, and Stylish Scissors at a Heavy Work Bench and place it.
 
+[IMG]http://i.imgur.com/vFuEf8t.png[/IMG]
+[IMG]http://i.imgur.com/sIU9aQC.png[/IMG]
+
 Next, right click on the Banner Rack while holding banners and they will be transferred to the Banner Rack.
+
+[IMG]http://i.imgur.com/DYrbO0a.png[/IMG]
+[IMG]http://i.imgur.com/UVgT4GH.png[/IMG]
 
 You will receive the banner buff for all banners stored in the Banner Rack!
 
+[IMG]http://i.imgur.com/7YYKS91.png[/IMG]
+
 Right click on Banner Rack for a hint on which banner to work towards next.
+
+[IMG]http://i.imgur.com/T51Jmn3.png[/IMG]
 
 Hover over a Banner Rack to see the progress on your collection.
 
+[IMG]http://i.imgur.com/ipsy3jL.png[/IMG]
+
 You may be wondering how to get Stylish Scissors. The Stylist drops it rarely, so you'll have to be a bit cruel with the lava buckets, but it is well worth the guilt. 
+
+[IMG]http://i.imgur.com/ZMfCt89.png[/IMG]
+
+See it in action:
+[video mp4=https://github.com/user-attachments/assets/7c65c1bb-31a4-4cba-853c-49ea7cbfadf0][/video]
 
 [h1]Links[/h1]
 Source code hosted on [url=github.com/JavidPack/BannerBonanza]GitHub[/url], collaboration welcome
