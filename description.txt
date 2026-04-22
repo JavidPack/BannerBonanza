@@ -6,7 +6,7 @@ Next, right click on the Banner Rack while holding banners and they will be tran
 
 You will receive the banner buff for all banners stored in the Banner Rack!
 
-Right click on Banner Rack for a hint on which banner to work towards next.
+Right click on Banner Rack for a hint on which banner to work towards next. Shift right click to see even more information.
 
 Hover over a Banner Rack to see the progress on your collection.
 

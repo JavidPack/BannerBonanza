@@ -17,6 +17,9 @@ namespace BannerBonanza
 	class BannerBonanza : Mod
 	{
 		public static BannerBonanza instance;
+		internal static bool[] UnobtainableBanners;
+		internal static int VanillaBannerCount;
+
 		public override void Load() {
 			instance = this;
 
@@ -26,6 +29,9 @@ namespace BannerBonanza
 		}
 
 		public override void PostSetupContent() {
+			UnobtainableBanners = new bool[ItemLoader.ItemCount];
+			UnobtainableBanners[ItemID.WhiteCultistArcherBanner] = true;
+
 			// This code was previously in AddRecipeGroups because "I'm using this as a PostPostSetupContent so all mods are loaded before I access bannerToItem". I don't think this is right, it should be fine here.
 			Tiles.BannerRackTE.itemToBanner.Clear();
 			FieldInfo bannerToItemField = typeof(NPCLoader).GetField("bannerToItem", BindingFlags.NonPublic | BindingFlags.Static);
@@ -39,13 +45,15 @@ namespace BannerBonanza
 				}
 			}
 
+			VanillaBannerCount = 0;
 			for (int i = -10; i < NPCID.Count; i++) {
 				int vanillaBannerID = Terraria.Item.NPCtoBanner(i);
 				if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(i)]) {
 					int vanillaBannerItemID = Item.BannerToItem(vanillaBannerID);
-					if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled) {
+					if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled && !UnobtainableBanners[vanillaBannerItemID]) {
 						if (!Tiles.BannerRackTE.itemToBanner.ContainsKey(vanillaBannerItemID)) {
 							Tiles.BannerRackTE.itemToBanner.Add(vanillaBannerItemID, vanillaBannerID);
+							VanillaBannerCount++;
 						}
 					}
 				}

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -346,23 +347,42 @@ namespace BannerBonanza.Tiles
 					//player.NPCBannerBuff
 					int nextNPCToKill = -1;
 					int nextNPCToKillLeft = 9999;
+					int nextBannerItemID = -1;
 					for (int npctype = -10; npctype < NPCLoader.NPCCount; npctype++) {
 						int vanillaBannerID = Terraria.Item.NPCtoBanner(npctype);
 						if (vanillaBannerID > 0 && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[NPCID.FromNetId(npctype)]) {
 							int vanillaBannerItemID = Item.BannerToItem(vanillaBannerID);
-							if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled) {
+							if (ItemID.Sets.BannerStrength[vanillaBannerItemID].Enabled && !BannerBonanza.UnobtainableBanners[vanillaBannerItemID]) {
 								int killsToBanner = ItemID.Sets.KillsToBanner[vanillaBannerItemID];
 								int killsLeft = killsToBanner - (NPC.killCount[vanillaBannerID] % killsToBanner);
 
 								if (killsLeft < nextNPCToKillLeft && !bannerRackTE.bannerItems.Any(x => x.type == vanillaBannerItemID)) {
 									nextNPCToKillLeft = killsLeft;
 									nextNPCToKill = npctype;
+									nextBannerItemID = vanillaBannerItemID;
 								}
 							}
 						}
 					}
 					if (nextNPCToKill != -1) {
-						Main.NewText($"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)}");
+						Main.NewText($"Try killing {nextNPCToKillLeft} more {Lang.GetNPCNameValue(nextNPCToKill)} ([i:{nextBannerItemID}])");
+					}
+
+					if (Main.keyState.PressingShift()) {
+						// If holding shift, show all banners I don't have.
+						StringBuilder sb = new StringBuilder();
+						int count = 0;
+						foreach (var item in BannerRackTE.itemToBanner) {
+							if (!bannerRackTE.bannerItems.Any(x => x.type == item.Key)) {
+								sb.Append($"[i:{item.Key}]");
+								count++;
+								if (count > 10) {
+									sb.Append("\n");
+									break;
+								}
+							}
+						}
+						Main.NewText($"Banners not in rack: {count}\n{sb.ToString()}");
 					}
 				}
 			}
