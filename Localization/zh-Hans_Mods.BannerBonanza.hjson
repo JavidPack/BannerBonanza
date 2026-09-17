@@ -1,8 +1,8 @@
 Items: {
 	BannerRackItem: {
-		// DisplayName: Banner Rack
-		// Tooltip: Place banners on the rack
+		DisplayName: 旗帜架
+		Tooltip: 将旗帜放置在架上
 	}
 }
 
-// Tiles.BannerRackTile.MapEntry: Banner Rack
+Tiles.BannerRackTile.MapEntry: 旗帜架
